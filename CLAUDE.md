@@ -13,12 +13,18 @@ There is no test runner configured.
 
 ## Architecture
 
-A single-page React 19 app bundled with Vite. The entire application — state, business logic, and UI — lives in one component, [src/App.jsx](src/App.jsx). [src/main.jsx](src/main.jsx) mounts it into `#root` in [index.html](index.html). Styling is plain CSS in `src/App.css` and `src/index.css` (no CSS framework).
+A single-page React 19 app bundled with Vite. [src/main.jsx](src/main.jsx) mounts `App` into `#root` in [index.html](index.html). Styling is plain CSS in `src/App.css` and `src/index.css` (no CSS framework).
 
-Transactions are held in component `useState` with hardcoded seed data — there is **no backend, no persistence, and no routing**. A page refresh resets all data. Derived values (`totalIncome`, `totalExpenses`, `balance`, filtered list) are recomputed inline on each render from the transactions array.
+[src/App.jsx](src/App.jsx) is the container: it owns the `transactions` state (hardcoded seed data) and the `categories` list, exposes an `addTransaction` handler, and composes three presentational children:
+
+- [src/Summary.jsx](src/Summary.jsx) — receives `transactions` and computes `totalIncome`/`totalExpenses`/`balance` itself.
+- [src/TransactionForm.jsx](src/TransactionForm.jsx) — owns its own form input state and calls the `onAdd` prop with a new transaction.
+- [src/TransactionList.jsx](src/TransactionList.jsx) — owns its own filter state (`filterType`/`filterCategory`) and renders the filtered table.
+
+Transactions live only in `App`'s `useState` — there is **no backend, no persistence, and no routing**. A page refresh resets all data. Derived values are recomputed on each render rather than stored.
 
 ## Context
 
-This is a deliberately flawed starter project (see [README.md](README.md)) used in a Claude Code course. It ships with an intentional bug, rough UI, and messy code that are meant to be fixed.
+This is a deliberately flawed starter project (see [README.md](README.md)) used in a Claude Code course. It shipped with an intentional bug, rough UI, and messy code meant to be fixed.
 
-Known issue to be aware of: transaction `amount` is stored as a string, so the income/expense `reduce` calls concatenate strings instead of summing numbers. Fixing financial calculations generally requires coercing `amount` to a number (e.g. `Number(t.amount)`).
+`amount` is now stored as a number everywhere (seed data and form submissions), so the income/expense totals sum numerically. Note that the seed "Freelance Work" entry is labeled `type: "expense"` (a data quirk, not a calculation bug), so it counts toward expenses.
