@@ -1,473 +1,425 @@
 /* ============================================================
-   The Ledger — a personal finance tracker
-   Mono-led typography, ruled columns, ink-coded figures.
+   The Receipt — a personal finance tracker printed as one
+   continuous thermal slip. Courier Prime throughout; Archivo
+   Black only for the merchant name and the balance stamp.
    ============================================================ */
 
-.app {
-  max-width: 840px;
-  margin: 0 auto;
-  padding: clamp(20px, 5vw, 56px) clamp(16px, 4vw, 32px) 80px;
+.counter {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: clamp(28px, 7vh, 80px) 16px clamp(40px, 8vh, 96px);
 }
 
-/* Each major block sits on a sheet of raised paper. */
-.app > * {
-  animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+/* ---------- The slip ---------- */
+.receipt {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  background: var(--paper);
+  box-shadow:
+    0 28px 60px -24px rgba(0, 0, 0, 0.7),
+    0 6px 16px rgba(0, 0, 0, 0.35);
+  animation: rise 0.45s ease both;
 }
-.app > *:nth-child(1) { animation-delay: 0.02s; }
-.app > *:nth-child(2) { animation-delay: 0.08s; }
-.app > *:nth-child(3) { animation-delay: 0.14s; }
-.app > *:nth-child(4) { animation-delay: 0.20s; }
-.app > *:nth-child(5) { animation-delay: 0.26s; }
 
 @keyframes rise {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ---------- Masthead ---------- */
-.masthead {
+/* The content prints out of the register, top to bottom. The tears sit
+   outside .receipt-inner so this reveal never clips the perforation. */
+@keyframes feed {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+/* Torn perforated edges: rows of paper-colored teeth over the counter. */
+.tear {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background-repeat: repeat-x;
+  background-size: 20px 10px;
+}
+.tear-top {
+  top: -9px;
+  /* teeth point up */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='10'%3E%3Cpath d='M0 10 L10 0 L20 10 Z' fill='%23f1efe8'/%3E%3C/svg%3E");
+}
+.tear-bottom {
+  bottom: -9px;
+  /* teeth point down */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='10'%3E%3Cpath d='M0 0 L10 10 L20 0 Z' fill='%23f1efe8'/%3E%3C/svg%3E");
+}
+
+.receipt-inner {
+  padding: clamp(24px, 5vw, 36px) clamp(20px, 5vw, 34px);
+  animation: feed 0.8s steps(16) both;
+}
+
+/* Dashed separators between every printed block. */
+.receipt-inner > * + * {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px dashed var(--ink-faint);
+}
+
+/* ---------- Receipt header (merchant) ---------- */
+.rcpt-head {
+  text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding-bottom: 22px;
-  margin-bottom: 28px;
-  border-bottom: 2px solid var(--ink);
+  gap: 7px;
 }
 
-.wordmark {
-  font-family: var(--mono);
-  font-weight: 600;
-  font-size: clamp(20px, 4.5vw, 27px);
-  letter-spacing: 0.14em;
+.merchant {
+  font-family: var(--stampface);
+  font-size: clamp(25px, 6.5vw, 33px);
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
+  line-height: 1;
 }
 
-.tagline {
-  font-size: 14px;
-  color: var(--muted);
-  letter-spacing: 0.01em;
+.rcpt-meta {
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+}
+.rcpt-meta-strong {
+  color: var(--ink);
 }
 
-/* ---------- Shared sheet + section heading ---------- */
-.sheet {
-  background: var(--paper-raised);
-  border: 1px solid var(--rule-strong);
-  border-radius: 4px;
-  padding: clamp(18px, 3vw, 26px);
-  margin-bottom: 22px;
-  box-shadow: 0 1px 0 rgba(26, 28, 26, 0.04);
-}
-
-.eyebrow {
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 500;
+/* ---------- Shared printed type ---------- */
+.rcpt-h {
+  font-size: 12px;
+  font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--muted);
-  display: block;
+  color: var(--ink-soft);
   margin-bottom: 14px;
 }
 
-/* ---------- Balance sheet (the hero equation) ---------- */
-.balance-sheet {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr auto 1fr;
-  align-items: center;
-  gap: clamp(8px, 2vw, 22px);
-  background: var(--paper-raised);
-  border: 1px solid var(--ink);
-  border-radius: 4px;
-  padding: clamp(22px, 4vw, 34px) clamp(18px, 3vw, 30px);
-  margin-bottom: 22px;
-  box-shadow: 0 2px 0 rgba(26, 28, 26, 0.06);
-}
-
-.bs-term {
+/* A dotted leader that fills the space between a label and a figure. */
+.leader {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 0;
+  align-items: baseline;
+  gap: 9px;
 }
-
-.bs-label {
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--muted);
+.leader .lead-dots {
+  flex: 1;
+  border-bottom: 1px dotted var(--ink-faint);
+  transform: translateY(-3px);
 }
-
-.bs-figure {
-  font-family: var(--mono);
-  font-weight: 600;
+.leader .lead-label {
+  letter-spacing: 0.02em;
+}
+.leader .lead-val {
   font-feature-settings: "tnum" 1;
-  font-size: clamp(20px, 5.2vw, 34px);
-  letter-spacing: -0.01em;
-  line-height: 1.05;
   white-space: nowrap;
 }
 
-.bs-credit .bs-figure { color: var(--green); }
-.bs-debit .bs-figure { color: var(--red); }
-
-/* The balance term is the carried-forward total — given the most weight. */
-.bs-net {
-  border-left: 1px solid var(--rule);
-  padding-left: clamp(8px, 2vw, 22px);
+/* ---------- Summary (the hero) ---------- */
+.summary .leader {
+  font-size: 15px;
+  margin-bottom: 9px;
 }
-.bs-net .bs-figure {
-  font-size: clamp(24px, 6.2vw, 42px);
-  color: var(--ink);
-}
-.bs-net.is-negative .bs-figure { color: var(--red); }
+.sum-in .lead-val { color: var(--ink); }
+.sum-out .lead-val { color: var(--stamp); }
 
-.bs-op {
-  font-family: var(--mono);
-  font-size: clamp(16px, 3vw, 24px);
-  font-weight: 400;
-  color: var(--rule-strong);
-  text-align: center;
-  user-select: none;
+/* The stamped balance. */
+.stamp {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 16px;
+  color: var(--stamp);
+  border: 2px solid var(--stamp);
+  box-shadow:
+    inset 0 0 0 2px var(--paper),
+    inset 0 0 0 3px var(--stamp);
 }
-
-/* ---------- Category analysis ---------- */
-.chart {
-  background: var(--paper-raised);
-  border: 1px solid var(--rule-strong);
-  border-radius: 4px;
-  padding: clamp(18px, 3vw, 26px);
-  margin-bottom: 22px;
-  box-shadow: 0 1px 0 rgba(26, 28, 26, 0.04);
+.stamp-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
-
-.chart h2,
-.add-transaction h2,
-.transactions h2 {
-  font-family: var(--mono);
-  font-weight: 600;
-  font-size: 17px;
+.stamp-amt {
+  font-family: var(--stampface);
+  font-size: clamp(26px, 8vw, 38px);
   letter-spacing: 0.01em;
-  margin-bottom: 16px;
+  font-feature-settings: "tnum" 1;
 }
 
-/* Donut + centered total */
-.chart-plot {
-  position: relative;
-}
-
-.chart-center {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+/* ---------- Category breakdown (printed bars) ---------- */
+.bars {
+  list-style: none;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  pointer-events: none;
+  gap: 11px;
 }
-
-.chart-center-label {
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.chart-center-value {
-  font-family: var(--mono);
-  font-weight: 600;
-  font-feature-settings: "tnum" 1;
-  font-size: clamp(18px, 4vw, 24px);
-  color: var(--red);
-}
-
-/* Custom legend — a small ledger key */
-.chart-legend {
-  list-style: none;
+.bar-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 6px 22px;
-  margin-top: 20px;
-  padding-top: 18px;
-  border-top: 1px solid var(--rule);
+  grid-template-columns: 1fr;
+  gap: 5px;
 }
-
-.chart-legend li {
+.bar-top {
   display: flex;
-  align-items: center;
-  gap: 9px;
-  font-family: var(--mono);
-  font-size: 12px;
-}
-
-.chart-legend .swatch {
-  width: 9px;
-  height: 9px;
-  border-radius: 2px;
-  flex-shrink: 0;
-}
-
-.chart-legend .legend-cat {
-  text-transform: capitalize;
-  color: var(--ink);
-}
-
-.chart-legend .legend-amt {
-  margin-left: auto;
-  font-feature-settings: "tnum" 1;
-  color: var(--muted);
-}
-
-/* ---------- New entry form ---------- */
-.add-transaction {
-  background: var(--paper-raised);
-  border: 1px solid var(--rule-strong);
-  border-radius: 4px;
-  padding: clamp(18px, 3vw, 26px);
-  margin-bottom: 22px;
-  box-shadow: 0 1px 0 rgba(26, 28, 26, 0.04);
-}
-
-.add-transaction form {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  justify-content: space-between;
+  align-items: baseline;
   gap: 10px;
 }
+.bar-cat {
+  font-size: 13px;
+  text-transform: capitalize;
+  letter-spacing: 0.01em;
+}
+.bar-amt {
+  font-size: 13px;
+  font-feature-settings: "tnum" 1;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.bar-track {
+  height: 8px;
+  background: rgba(42, 38, 34, 0.1);
+}
+.bar-fill {
+  display: block;
+  height: 100%;
+  background: var(--ink);
+}
+.bar-fill.is-top {
+  background: var(--stamp);
+}
 
+/* ---------- Add entry ---------- */
+.add-transaction form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 12px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.field-wide { grid-column: 1 / -1; }
+.field label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+/* Fill-in-the-blank receipt fields: a line you write on. */
 .add-transaction input,
 .add-transaction select,
 .filters select {
-  font-family: var(--sans);
+  font-family: var(--mono);
   font-size: 14px;
   color: var(--ink);
-  background: var(--paper);
-  border: 1px solid var(--rule-strong);
-  border-radius: 3px;
-  padding: 10px 11px;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--ink-soft);
+  border-radius: 0;
+  padding: 7px 2px;
 }
-
+.add-transaction input[type="number"] {
+  font-feature-settings: "tnum" 1;
+}
 .add-transaction input::placeholder {
-  color: var(--muted);
+  color: var(--ink-faint);
 }
-
 .add-transaction input:focus,
 .add-transaction select:focus,
 .filters select:focus,
-.delete-btn:focus-visible,
+.void:focus-visible,
 .clear-filters:focus-visible {
-  outline: none;
-  border-color: var(--green);
-  box-shadow: 0 0 0 3px var(--green-soft);
+  outline: 2px solid var(--stamp);
+  outline-offset: 3px;
 }
-
-.add-transaction input[type="number"] {
-  font-family: var(--mono);
-  font-feature-settings: "tnum" 1;
-}
-
 .add-transaction button {
+  grid-column: 1 / -1;
+  margin-top: 2px;
   font-family: var(--mono);
-  font-weight: 500;
+  font-weight: 700;
   font-size: 13px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
+  color: var(--paper);
   background: var(--ink);
-  color: var(--paper-raised);
-  border: 1px solid var(--ink);
-  border-radius: 3px;
-  padding: 0 22px;
-  white-space: nowrap;
+  border: none;
+  border-radius: 0;
+  padding: 13px;
   cursor: pointer;
   transition: background 0.15s, transform 0.05s;
 }
-
 .add-transaction button:hover {
-  background: var(--green);
-  border-color: var(--green);
+  background: var(--stamp);
 }
 .add-transaction button:active {
   transform: translateY(1px);
 }
 
-/* ---------- The register (ledger table) ---------- */
-.transactions {
-  background: var(--paper-raised);
-  border: 1px solid var(--rule-strong);
-  border-radius: 4px;
-  padding: clamp(18px, 3vw, 26px);
-  box-shadow: 0 1px 0 rgba(26, 28, 26, 0.04);
-}
-
+/* ---------- Account activity (line items) ---------- */
 .filters {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 16px;
   flex-wrap: wrap;
 }
-
 .filters select {
-  font-family: var(--mono);
   font-size: 12px;
   letter-spacing: 0.04em;
-  padding: 7px 10px;
+  border-bottom-color: var(--ink-faint);
+  cursor: pointer;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
+.items {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
 }
-
-thead th {
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
-  text-align: left;
-  padding: 0 12px 10px;
-  border-bottom: 2px solid var(--ink);
+.item {
+  padding: 11px 0;
+  border-bottom: 1px dotted var(--ink-faint);
 }
+.item:first-child { padding-top: 0; }
 
-tbody td {
-  padding: 13px 12px;
-  border-bottom: 1px solid var(--rule);
+.item-main {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+}
+.item-name {
   font-size: 14px;
-  vertical-align: middle;
+  letter-spacing: 0.01em;
 }
-
-tbody tr {
-  transition: background 0.12s;
+.item-leader {
+  flex: 1;
+  border-bottom: 1px dotted var(--ink-faint);
+  transform: translateY(-3px);
 }
-tbody tr:hover {
-  background: var(--paper);
-}
-
-.cell-date {
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--muted);
-  white-space: nowrap;
-}
-
-.cell-desc {
-  font-weight: 500;
-}
-
-/* Category shown as a small ledger tag. */
-.cell-cat .tag {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  text-transform: capitalize;
-  color: var(--muted);
-  border: 1px solid var(--rule-strong);
-  border-radius: 2px;
-  padding: 2px 8px;
-}
-
-/* Amounts: right-aligned tabular figures, ink-coded. */
-.col-amount,
-.cell-amount {
-  text-align: right;
-}
-.cell-amount {
-  font-family: var(--mono);
-  font-weight: 500;
+.item-amt {
+  font-size: 14px;
   font-feature-settings: "tnum" 1;
   white-space: nowrap;
 }
-.cell-amount.income-amount { color: var(--green); }
-.cell-amount.expense-amount { color: var(--red); }
+.item-amt.is-in { color: var(--ink); }
+.item-amt.is-out { color: var(--stamp); }
 
-.col-actions { width: 1%; }
-.cell-actions { text-align: right; }
-
-.delete-btn {
+.item-sub {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 3px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  text-transform: capitalize;
+}
+.void {
   font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  background: transparent;
+  border: 0;
+  padding: 2px 0;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s;
+}
+.item:hover .void,
+.void:focus-visible { opacity: 1; }
+.void:hover { color: var(--stamp); }
+
+/* ---------- Footer (recap + barcode) ---------- */
+.rcpt-foot {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px dashed var(--ink-faint);
+}
+.rcpt-foot .leader {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.barcode {
+  height: 46px;
+  margin: 18px 0 8px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--ink) 0 3px, transparent 3px 6px,
+    var(--ink) 6px 7px, transparent 7px 11px,
+    var(--ink) 11px 14px, transparent 14px 15px,
+    var(--ink) 15px 16px, transparent 16px 21px,
+    var(--ink) 21px 24px, transparent 24px 25px,
+    var(--ink) 25px 28px, transparent 28px 32px,
+    var(--ink) 32px 33px, transparent 33px 36px
+  );
+}
+.barcode-no {
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  color: var(--ink-soft);
+}
+.foot-note {
+  margin-top: 14px;
+  text-align: center;
   font-size: 11px;
   letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--muted);
-  background: transparent;
-  border: 1px solid var(--rule-strong);
-  border-radius: 3px;
-  padding: 5px 11px;
-  cursor: pointer;
-  opacity: 0.55;
-  transition: opacity 0.15s, color 0.15s, border-color 0.15s;
-}
-tbody tr:hover .delete-btn {
-  opacity: 1;
-}
-.delete-btn:hover {
-  color: var(--red);
-  border-color: var(--red);
+  color: var(--ink-soft);
 }
 
 /* ---------- Empty state ---------- */
-.ledger-empty {
+.rcpt-empty {
   text-align: center;
-  padding: 38px 16px;
-  color: var(--muted);
+  padding: 26px 8px 8px;
+  color: var(--ink-soft);
 }
-.ledger-empty p {
-  font-size: 14px;
+.rcpt-empty p {
+  font-size: 13px;
   margin-bottom: 14px;
 }
 .clear-filters {
   font-family: var(--mono);
   font-size: 12px;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink);
   background: transparent;
   border: 1px solid var(--ink);
-  border-radius: 3px;
+  border-radius: 0;
   padding: 8px 16px;
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
 }
 .clear-filters:hover {
   background: var(--ink);
-  color: var(--paper-raised);
+  color: var(--paper);
 }
 
 /* ---------- Responsive ---------- */
-@media (max-width: 620px) {
-  .balance-sheet {
-    grid-template-columns: 1fr;
-    text-align: left;
-    gap: 16px;
-  }
-  .bs-op { display: none; }
-  .bs-net {
-    border-left: none;
-    border-top: 1px solid var(--rule);
-    padding-left: 0;
-    padding-top: 16px;
-  }
+@media (max-width: 420px) {
   .add-transaction form {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
   }
-  .add-transaction input[type="text"],
-  .add-transaction button {
-    grid-column: 1 / -1;
-  }
-  .cell-date { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .app > * {
+  .receipt,
+  .receipt-inner {
     animation: none;
   }
   * {

@@ -1,8 +1,4 @@
-import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer } from 'recharts';
-import { formatUSD } from './format';
-
-// Ledger inks: greens through ochre to oxblood, with a muted grey tail.
-const COLORS = ["#2f5d50", "#5c8374", "#8aa399", "#c9a227", "#cf7d3c", "#b23a2e", "#6b7268"];
+import { formatUSD } from './format'
 
 function CategoryChart({ transactions }) {
   const totals = {};
@@ -20,51 +16,28 @@ function CategoryChart({ transactions }) {
     return null;
   }
 
-  const totalSpent = data.reduce((sum, d) => sum + d.amount, 0);
+  const max = data[0].amount;
 
   return (
-    <div className="chart">
-      <h2>Spending by Category</h2>
-      <div className="chart-plot">
-        <ResponsiveContainer width="100%" height={240}>
-          <PieChart>
-            <Pie
-              data={data}
-              dataKey="amount"
-              nameKey="category"
-              cx="50%"
-              cy="50%"
-              innerRadius={70}
-              outerRadius={104}
-              paddingAngle={1.5}
-              stroke="none"
-            >
-              {data.map((entry, index) => (
-                <Cell key={entry.category} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip formatter={(value) => [formatUSD(value), "Spent"]} />
-          </PieChart>
-        </ResponsiveContainer>
-        <div className="chart-center" aria-hidden="true">
-          <span className="chart-center-label">Total out</span>
-          <span className="chart-center-value">{formatUSD(totalSpent)}</span>
-        </div>
-      </div>
-
-      <ul className="chart-legend">
+    <section className="breakdown" aria-label="Spending by category">
+      <h2 className="rcpt-h">Where it went</h2>
+      <ul className="bars">
         {data.map((entry, index) => (
-          <li key={entry.category}>
-            <span
-              className="swatch"
-              style={{ background: COLORS[index % COLORS.length] }}
-            />
-            <span className="legend-cat">{entry.category}</span>
-            <span className="legend-amt">{formatUSD(entry.amount)}</span>
+          <li className="bar-row" key={entry.category}>
+            <div className="bar-top">
+              <span className="bar-cat">{entry.category}</span>
+              <span className="bar-amt">{formatUSD(entry.amount)}</span>
+            </div>
+            <span className="bar-track">
+              <span
+                className={`bar-fill${index === 0 ? " is-top" : ""}`}
+                style={{ width: `${(entry.amount / max) * 100}%` }}
+              />
+            </span>
           </li>
         ))}
       </ul>
-    </div>
+    </section>
   );
 }
 

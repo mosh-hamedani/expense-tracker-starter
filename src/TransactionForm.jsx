@@ -27,32 +27,44 @@ function TransactionForm({ categories, onAdd }) {
 
   return (
     <div className="add-transaction">
-      <h2>New entry</h2>
+      <h2 className="rcpt-h">Ring up an entry</h2>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Description"
-          aria-label="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <input
-          type="number"
-          placeholder="Amount"
-          aria-label="Amount"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-        />
-        <select value={type} aria-label="Type" onChange={(e) => setType(e.target.value)}>
-          <option value="income">Income</option>
-          <option value="expense">Expense</option>
-        </select>
-        <select value={category} aria-label="Category" onChange={(e) => setCategory(e.target.value)}>
-          {categories.map(cat => (
-            <option key={cat} value={cat}>{cat}</option>
-          ))}
-        </select>
-        <button type="submit">Add entry</button>
+        <div className="field field-wide">
+          <label htmlFor="tf-desc">Description</label>
+          <input
+            id="tf-desc"
+            type="text"
+            placeholder="What was it?"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+        <div className="field">
+          <label htmlFor="tf-amount">Amount</label>
+          <input
+            id="tf-amount"
+            type="number"
+            placeholder="0.00"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+          />
+        </div>
+        <div className="field">
+          <label htmlFor="tf-type">Direction</label>
+          <select id="tf-type" value={type} onChange={(e) => setType(e.target.value)}>
+            <option value="income">Money in</option>
+            <option value="expense">Money out</option>
+          </select>
+        </div>
+        <div className="field field-wide">
+          <label htmlFor="tf-category">Category</label>
+          <select id="tf-category" value={category} onChange={(e) => setCategory(e.target.value)}>
+            {categories.map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
+        </div>
+        <button type="submit">Print entry</button>
       </form>
     </div>
   );

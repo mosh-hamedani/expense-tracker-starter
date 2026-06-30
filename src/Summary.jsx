@@ -12,24 +12,21 @@ function Summary({ transactions }) {
   const balance = totalIncome - totalExpenses;
 
   return (
-    <section className="balance-sheet" aria-label="Balance">
-      <div className="bs-term bs-credit">
-        <span className="bs-label">Money in</span>
-        <span className="bs-figure">{formatUSD(totalIncome)}</span>
+    <section className="summary" aria-label="Account summary">
+      <div className="leader sum-in">
+        <span className="lead-label">Money in</span>
+        <span className="lead-dots" aria-hidden="true" />
+        <span className="lead-val">+{formatUSD(totalIncome)}</span>
+      </div>
+      <div className="leader sum-out">
+        <span className="lead-label">Money out</span>
+        <span className="lead-dots" aria-hidden="true" />
+        <span className="lead-val">−{formatUSD(totalExpenses)}</span>
       </div>
 
-      <span className="bs-op" aria-hidden="true">&minus;</span>
-
-      <div className="bs-term bs-debit">
-        <span className="bs-label">Money out</span>
-        <span className="bs-figure">{formatUSD(totalExpenses)}</span>
-      </div>
-
-      <span className="bs-op" aria-hidden="true">=</span>
-
-      <div className={`bs-term bs-net${balance < 0 ? " is-negative" : ""}`}>
-        <span className="bs-label">Balance</span>
-        <span className="bs-figure">{formatUSD(balance)}</span>
+      <div className="stamp">
+        <span className="stamp-label">{balance < 0 ? "Overdrawn" : "Balance"}</span>
+        <span className="stamp-amt">{formatUSD(balance)}</span>
       </div>
     </section>
   );

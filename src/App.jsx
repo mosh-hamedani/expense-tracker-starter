@@ -27,20 +27,35 @@ function App() {
     setTransactions(transactions.filter(t => t.id !== id));
   };
 
+  const printed = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+  });
+
   return (
-    <div className="app">
-      <header className="masthead">
-        <div className="wordmark">Finance Tracker</div>
-        <p className="tagline">A plain ledger for money in and money out.</p>
-      </header>
+    <div className="counter">
+      <div className="receipt">
+        <div className="tear tear-top" aria-hidden="true"></div>
 
-      <Summary transactions={transactions} />
+        <div className="receipt-inner">
+          <header className="rcpt-head">
+            <div className="merchant">Finance Tracker</div>
+            <p className="rcpt-meta">Personal account · cash &amp; cards</p>
+            <p className="rcpt-meta rcpt-meta-strong">Register #1 — {printed}</p>
+          </header>
 
-      <CategoryChart transactions={transactions} />
+          <Summary transactions={transactions} />
 
-      <TransactionForm categories={categories} onAdd={addTransaction} />
+          <CategoryChart transactions={transactions} />
 
-      <TransactionList transactions={transactions} categories={categories} onDelete={deleteTransaction} />
+          <TransactionForm categories={categories} onAdd={addTransaction} />
+
+          <TransactionList transactions={transactions} categories={categories} onDelete={deleteTransaction} />
+        </div>
+
+        <div className="tear tear-bottom" aria-hidden="true"></div>
+      </div>
     </div>
   );
 }

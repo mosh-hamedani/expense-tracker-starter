@@ -5,8 +5,8 @@ function TransactionList({ transactions, categories, onDelete }) {
   const [filterType, setFilterType] = useState("all");
   const [filterCategory, setFilterCategory] = useState("all");
 
-  const handleDelete = (t) => {
-    if (window.confirm(`Delete "${t.description}"?`)) {
+  const handleVoid = (t) => {
+    if (window.confirm(`Void "${t.description}"?`)) {
       onDelete(t.id);
     }
   };
@@ -27,15 +27,15 @@ function TransactionList({ transactions, categories, onDelete }) {
   const isFiltered = filterType !== "all" || filterCategory !== "all";
 
   return (
-    <div className="transactions">
-      <h2>Ledger</h2>
+    <section className="transactions" aria-label="Account activity">
+      <h2 className="rcpt-h">Account activity</h2>
       <div className="filters">
-        <select value={filterType} onChange={(e) => setFilterType(e.target.value)}>
-          <option value="all">All types</option>
-          <option value="income">Income</option>
-          <option value="expense">Expense</option>
+        <select value={filterType} aria-label="Filter by direction" onChange={(e) => setFilterType(e.target.value)}>
+          <option value="all">All directions</option>
+          <option value="income">Money in</option>
+          <option value="expense">Money out</option>
         </select>
-        <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
+        <select value={filterCategory} aria-label="Filter by category" onChange={(e) => setFilterCategory(e.target.value)}>
           <option value="all">All categories</option>
           {categories.map(cat => (
             <option key={cat} value={cat}>{cat}</option>
@@ -43,39 +43,33 @@ function TransactionList({ transactions, categories, onDelete }) {
         </select>
       </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Description</th>
-            <th>Category</th>
-            <th className="col-amount">Amount</th>
-            <th className="col-actions"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredTransactions.map(t => (
-            <tr key={t.id}>
-              <td className="cell-date">{formatDate(t.date)}</td>
-              <td className="cell-desc">{t.description}</td>
-              <td className="cell-cat"><span className="tag">{t.category}</span></td>
-              <td className={`cell-amount ${t.type === "income" ? "income-amount" : "expense-amount"}`}>
-                {t.type === "income" ? "+" : "−"}{formatUSD(t.amount)}
-              </td>
-              <td className="cell-actions">
-                <button className="delete-btn" onClick={() => handleDelete(t)}>Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {filteredTransactions.length === 0 && (
-        <div className="ledger-empty">
+      {filteredTransactions.length > 0 ? (
+        <ul className="items">
+          {filteredTransactions.map(t => {
+            const income = t.type === "income";
+            return (
+              <li className="item" key={t.id}>
+                <div className="item-main">
+                  <span className="item-name">{t.description}</span>
+                  <span className="item-leader" aria-hidden="true" />
+                  <span className={`item-amt ${income ? "is-in" : "is-out"}`}>
+                    {income ? "+" : "−"}{formatUSD(t.amount)}
+                  </span>
+                </div>
+                <div className="item-sub">
+                  <span>{formatDate(t.date)} · {t.category}</span>
+                  <button className="void" onClick={() => handleVoid(t)}>Void</button>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <div className="rcpt-empty">
           <p>
             {isFiltered
               ? "No entries match this filter."
-              : "No entries yet. Record your first one above."}
+              : "No entries yet. Ring up your first one above."}
           </p>
           {isFiltered && (
             <button className="clear-filters" onClick={clearFilters}>
@@ -84,7 +78,18 @@ function TransactionList({ transactions, categories, onDelete }) {
           )}
         </div>
       )}
-    </div>
+
+      <footer className="rcpt-foot">
+        <div className="leader">
+          <span className="lead-label">Entries</span>
+          <span className="lead-dots" aria-hidden="true" />
+          <span className="lead-val">{filteredTransactions.length}</span>
+        </div>
+        <div className="barcode" aria-hidden="true" />
+        <p className="barcode-no">FT 0001 7290 4416</p>
+        <p className="foot-note">Keep this receipt for your records.</p>
+      </footer>
+    </section>
   );
 }
 
