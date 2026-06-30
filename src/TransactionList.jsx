@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { formatUSD, formatDate } from './format'
 
 function TransactionList({ transactions, categories, onDelete }) {
   const [filterType, setFilterType] = useState("all");
@@ -10,6 +11,11 @@ function TransactionList({ transactions, categories, onDelete }) {
     }
   };
 
+  const clearFilters = () => {
+    setFilterType("all");
+    setFilterCategory("all");
+  };
+
   let filteredTransactions = transactions;
   if (filterType !== "all") {
     filteredTransactions = filteredTransactions.filter(t => t.type === filterType);
@@ -18,17 +24,19 @@ function TransactionList({ transactions, categories, onDelete }) {
     filteredTransactions = filteredTransactions.filter(t => t.category === filterCategory);
   }
 
+  const isFiltered = filterType !== "all" || filterCategory !== "all";
+
   return (
     <div className="transactions">
-      <h2>Transactions</h2>
+      <h2>Ledger</h2>
       <div className="filters">
         <select value={filterType} onChange={(e) => setFilterType(e.target.value)}>
-          <option value="all">All Types</option>
+          <option value="all">All types</option>
           <option value="income">Income</option>
           <option value="expense">Expense</option>
         </select>
         <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
-          <option value="all">All Categories</option>
+          <option value="all">All categories</option>
           {categories.map(cat => (
             <option key={cat} value={cat}>{cat}</option>
           ))}
@@ -41,26 +49,41 @@ function TransactionList({ transactions, categories, onDelete }) {
             <th>Date</th>
             <th>Description</th>
             <th>Category</th>
-            <th>Amount</th>
-            <th></th>
+            <th className="col-amount">Amount</th>
+            <th className="col-actions"></th>
           </tr>
         </thead>
         <tbody>
           {filteredTransactions.map(t => (
             <tr key={t.id}>
-              <td>{t.date}</td>
-              <td>{t.description}</td>
-              <td>{t.category}</td>
-              <td className={t.type === "income" ? "income-amount" : "expense-amount"}>
-                {t.type === "income" ? "+" : "-"}${t.amount}
+              <td className="cell-date">{formatDate(t.date)}</td>
+              <td className="cell-desc">{t.description}</td>
+              <td className="cell-cat"><span className="tag">{t.category}</span></td>
+              <td className={`cell-amount ${t.type === "income" ? "income-amount" : "expense-amount"}`}>
+                {t.type === "income" ? "+" : "−"}{formatUSD(t.amount)}
               </td>
-              <td>
+              <td className="cell-actions">
                 <button className="delete-btn" onClick={() => handleDelete(t)}>Delete</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {filteredTransactions.length === 0 && (
+        <div className="ledger-empty">
+          <p>
+            {isFiltered
+              ? "No entries match this filter."
+              : "No entries yet. Record your first one above."}
+          </p>
+          {isFiltered && (
+            <button className="clear-filters" onClick={clearFilters}>
+              Show all entries
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

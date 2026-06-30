@@ -1,131 +1,324 @@
+/* ============================================================
+   The Ledger — a personal finance tracker
+   Mono-led typography, ruled columns, ink-coded figures.
+   ============================================================ */
+
 .app {
-  max-width: 800px;
+  max-width: 840px;
   margin: 0 auto;
-  padding: 20px;
+  padding: clamp(20px, 5vw, 56px) clamp(16px, 4vw, 32px) 80px;
 }
 
-h1 {
-  margin-bottom: 4px;
+/* Each major block sits on a sheet of raised paper. */
+.app > * {
+  animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.app > *:nth-child(1) { animation-delay: 0.02s; }
+.app > *:nth-child(2) { animation-delay: 0.08s; }
+.app > *:nth-child(3) { animation-delay: 0.14s; }
+.app > *:nth-child(4) { animation-delay: 0.20s; }
+.app > *:nth-child(5) { animation-delay: 0.26s; }
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.subtitle {
-  margin-bottom: 20px;
-  color: #666;
-}
-
-.summary {
+/* ---------- Masthead ---------- */
+.masthead {
   display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 22px;
+  margin-bottom: 28px;
+  border-bottom: 2px solid var(--ink);
+}
+
+.wordmark {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: clamp(20px, 4.5vw, 27px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: baseline;
   gap: 12px;
-  margin-bottom: 24px;
 }
 
-.summary-card {
-  flex: 1;
-  border: 1px solid #ddd;
-  padding: 14px;
-  background: #fff;
+.tagline {
+  font-size: 14px;
+  color: var(--muted);
+  letter-spacing: 0.01em;
 }
 
-.summary-card h3 {
-  font-size: 13px;
-  color: #888;
-  margin-bottom: 4px;
+/* ---------- Shared sheet + section heading ---------- */
+.sheet {
+  background: var(--paper-raised);
+  border: 1px solid var(--rule-strong);
+  border-radius: 4px;
+  padding: clamp(18px, 3vw, 26px);
+  margin-bottom: 22px;
+  box-shadow: 0 1px 0 rgba(26, 28, 26, 0.04);
 }
 
-.income-amount {
-  color: green;
-  font-size: 20px;
-  font-weight: bold;
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 14px;
 }
 
-.expense-amount {
-  color: red;
-  font-size: 20px;
-  font-weight: bold;
+/* ---------- Balance sheet (the hero equation) ---------- */
+.balance-sheet {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+  align-items: center;
+  gap: clamp(8px, 2vw, 22px);
+  background: var(--paper-raised);
+  border: 1px solid var(--ink);
+  border-radius: 4px;
+  padding: clamp(22px, 4vw, 34px) clamp(18px, 3vw, 30px);
+  margin-bottom: 22px;
+  box-shadow: 0 2px 0 rgba(26, 28, 26, 0.06);
 }
 
-.balance-amount {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.chart {
-  border: 1px solid #ddd;
-  padding: 16px;
-  margin-bottom: 24px;
-  background: #fff;
-}
-
-.chart h2 {
-  font-size: 16px;
-  margin-bottom: 12px;
-}
-
-.add-transaction {
-  border: 1px solid #ddd;
-  padding: 16px;
-  margin-bottom: 24px;
-  background: #fff;
-}
-
-.add-transaction h2 {
-  font-size: 16px;
-  margin-bottom: 12px;
-}
-
-form {
+.bs-term {
   display: flex;
+  flex-direction: column;
   gap: 8px;
-  flex-wrap: wrap;
+  min-width: 0;
 }
 
-form input,
-form select {
-  padding: 8px;
-  border: 1px solid #ccc;
-  font-size: 14px;
+.bs-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
-form input[type="text"] {
-  flex: 2;
+.bs-figure {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-feature-settings: "tnum" 1;
+  font-size: clamp(20px, 5.2vw, 34px);
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+  white-space: nowrap;
 }
 
-form input[type="number"] {
-  flex: 1;
+.bs-credit .bs-figure { color: var(--green); }
+.bs-debit .bs-figure { color: var(--red); }
+
+/* The balance term is the carried-forward total — given the most weight. */
+.bs-net {
+  border-left: 1px solid var(--rule);
+  padding-left: clamp(8px, 2vw, 22px);
+}
+.bs-net .bs-figure {
+  font-size: clamp(24px, 6.2vw, 42px);
+  color: var(--ink);
+}
+.bs-net.is-negative .bs-figure { color: var(--red); }
+
+.bs-op {
+  font-family: var(--mono);
+  font-size: clamp(16px, 3vw, 24px);
+  font-weight: 400;
+  color: var(--rule-strong);
+  text-align: center;
+  user-select: none;
 }
 
-form select {
-  flex: 1;
+/* ---------- Category analysis ---------- */
+.chart {
+  background: var(--paper-raised);
+  border: 1px solid var(--rule-strong);
+  border-radius: 4px;
+  padding: clamp(18px, 3vw, 26px);
+  margin-bottom: 22px;
+  box-shadow: 0 1px 0 rgba(26, 28, 26, 0.04);
 }
 
-form button {
-  padding: 8px 20px;
-  background: #333;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.transactions {
-  margin-bottom: 24px;
-}
-
+.chart h2,
+.add-transaction h2,
 .transactions h2 {
-  font-size: 16px;
-  margin-bottom: 12px;
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: 0.01em;
+  margin-bottom: 16px;
+}
+
+/* Donut + centered total */
+.chart-plot {
+  position: relative;
+}
+
+.chart-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  pointer-events: none;
+}
+
+.chart-center-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.chart-center-value {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-feature-settings: "tnum" 1;
+  font-size: clamp(18px, 4vw, 24px);
+  color: var(--red);
+}
+
+/* Custom legend — a small ledger key */
+.chart-legend {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 6px 22px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+}
+
+.chart-legend li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.chart-legend .swatch {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.chart-legend .legend-cat {
+  text-transform: capitalize;
+  color: var(--ink);
+}
+
+.chart-legend .legend-amt {
+  margin-left: auto;
+  font-feature-settings: "tnum" 1;
+  color: var(--muted);
+}
+
+/* ---------- New entry form ---------- */
+.add-transaction {
+  background: var(--paper-raised);
+  border: 1px solid var(--rule-strong);
+  border-radius: 4px;
+  padding: clamp(18px, 3vw, 26px);
+  margin-bottom: 22px;
+  box-shadow: 0 1px 0 rgba(26, 28, 26, 0.04);
+}
+
+.add-transaction form {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  gap: 10px;
+}
+
+.add-transaction input,
+.add-transaction select,
+.filters select {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--rule-strong);
+  border-radius: 3px;
+  padding: 10px 11px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.add-transaction input::placeholder {
+  color: var(--muted);
+}
+
+.add-transaction input:focus,
+.add-transaction select:focus,
+.filters select:focus,
+.delete-btn:focus-visible,
+.clear-filters:focus-visible {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px var(--green-soft);
+}
+
+.add-transaction input[type="number"] {
+  font-family: var(--mono);
+  font-feature-settings: "tnum" 1;
+}
+
+.add-transaction button {
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--paper-raised);
+  border: 1px solid var(--ink);
+  border-radius: 3px;
+  padding: 0 22px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.05s;
+}
+
+.add-transaction button:hover {
+  background: var(--green);
+  border-color: var(--green);
+}
+.add-transaction button:active {
+  transform: translateY(1px);
+}
+
+/* ---------- The register (ledger table) ---------- */
+.transactions {
+  background: var(--paper-raised);
+  border: 1px solid var(--rule-strong);
+  border-radius: 4px;
+  padding: clamp(18px, 3vw, 26px);
+  box-shadow: 0 1px 0 rgba(26, 28, 26, 0.04);
 }
 
 .filters {
   display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
 }
 
 .filters select {
-  padding: 6px;
-  border: 1px solid #ccc;
-  font-size: 13px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  padding: 7px 10px;
 }
 
 table {
@@ -133,28 +326,151 @@ table {
   border-collapse: collapse;
 }
 
-thead {
-  background: #f5f5f5;
-}
-
-th, td {
-  padding: 10px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-  font-size: 14px;
-}
-
-th {
-  font-size: 12px;
-  color: #888;
+thead th {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
+  color: var(--muted);
+  text-align: left;
+  padding: 0 12px 10px;
+  border-bottom: 2px solid var(--ink);
 }
+
+tbody td {
+  padding: 13px 12px;
+  border-bottom: 1px solid var(--rule);
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+tbody tr {
+  transition: background 0.12s;
+}
+tbody tr:hover {
+  background: var(--paper);
+}
+
+.cell-date {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.cell-desc {
+  font-weight: 500;
+}
+
+/* Category shown as a small ledger tag. */
+.cell-cat .tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: capitalize;
+  color: var(--muted);
+  border: 1px solid var(--rule-strong);
+  border-radius: 2px;
+  padding: 2px 8px;
+}
+
+/* Amounts: right-aligned tabular figures, ink-coded. */
+.col-amount,
+.cell-amount {
+  text-align: right;
+}
+.cell-amount {
+  font-family: var(--mono);
+  font-weight: 500;
+  font-feature-settings: "tnum" 1;
+  white-space: nowrap;
+}
+.cell-amount.income-amount { color: var(--green); }
+.cell-amount.expense-amount { color: var(--red); }
+
+.col-actions { width: 1%; }
+.cell-actions { text-align: right; }
 
 .delete-btn {
-  padding: 4px 10px;
-  background: #eee;
-  border: 1px solid #ccc;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--rule-strong);
+  border-radius: 3px;
+  padding: 5px 11px;
   cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 0.15s, color 0.15s, border-color 0.15s;
+}
+tbody tr:hover .delete-btn {
+  opacity: 1;
+}
+.delete-btn:hover {
+  color: var(--red);
+  border-color: var(--red);
+}
+
+/* ---------- Empty state ---------- */
+.ledger-empty {
+  text-align: center;
+  padding: 38px 16px;
+  color: var(--muted);
+}
+.ledger-empty p {
+  font-size: 14px;
+  margin-bottom: 14px;
+}
+.clear-filters {
+  font-family: var(--mono);
   font-size: 12px;
-  color: #333;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--ink);
+  border-radius: 3px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.clear-filters:hover {
+  background: var(--ink);
+  color: var(--paper-raised);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 620px) {
+  .balance-sheet {
+    grid-template-columns: 1fr;
+    text-align: left;
+    gap: 16px;
+  }
+  .bs-op { display: none; }
+  .bs-net {
+    border-left: none;
+    border-top: 1px solid var(--rule);
+    padding-left: 0;
+    padding-top: 16px;
+  }
+  .add-transaction form {
+    grid-template-columns: 1fr 1fr;
+  }
+  .add-transaction input[type="text"],
+  .add-transaction button {
+    grid-column: 1 / -1;
+  }
+  .cell-date { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app > * {
+    animation: none;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+  }
 }

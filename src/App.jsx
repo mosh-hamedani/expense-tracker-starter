@@ -29,8 +29,10 @@ function App() {
 
   return (
     <div className="app">
-      <h1>Finance Tracker</h1>
-      <p className="subtitle">Track your income and expenses</p>
+      <header className="masthead">
+        <div className="wordmark">Finance Tracker</div>
+        <p className="tagline">A plain ledger for money in and money out.</p>
+      </header>
 
       <Summary transactions={transactions} />
 

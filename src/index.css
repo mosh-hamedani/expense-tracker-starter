@@ -1,11 +1,45 @@
+:root {
+  /* The Ledger — paper and ink */
+  --paper: #f7f8f5;
+  --paper-raised: #fffffe;
+  --ink: #1a1c1a;
+  --green: #2f5d50; /* credits, positive balance — currency ink */
+  --green-soft: #e7efe9;
+  --red: #b23a2e; /* debits — ledger red */
+  --red-soft: #f6e7e3;
+  --rule: #dbe0d6; /* printed ruling lines */
+  --rule-strong: #c3cabb;
+  --muted: #6b7268;
+
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  color-scheme: light;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  background-color: #ffffff;
-  color: #333;
+  font-family: var(--sans);
+  color: var(--ink);
+  background-color: var(--paper);
+  /* Faint horizontal ruling, like a sheet of ledger paper. */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 31px,
+    var(--rule) 31px,
+    var(--rule) 32px
+  );
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  line-height: 1.5;
 }

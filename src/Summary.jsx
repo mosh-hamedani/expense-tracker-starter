@@ -1,3 +1,5 @@
+import { formatUSD } from './format'
+
 function Summary({ transactions }) {
   const totalIncome = transactions
     .filter(t => t.type === "income")
@@ -10,20 +12,26 @@ function Summary({ transactions }) {
   const balance = totalIncome - totalExpenses;
 
   return (
-    <div className="summary">
-      <div className="summary-card">
-        <h3>Income</h3>
-        <p className="income-amount">${totalIncome}</p>
+    <section className="balance-sheet" aria-label="Balance">
+      <div className="bs-term bs-credit">
+        <span className="bs-label">Money in</span>
+        <span className="bs-figure">{formatUSD(totalIncome)}</span>
       </div>
-      <div className="summary-card">
-        <h3>Expenses</h3>
-        <p className="expense-amount">${totalExpenses}</p>
+
+      <span className="bs-op" aria-hidden="true">&minus;</span>
+
+      <div className="bs-term bs-debit">
+        <span className="bs-label">Money out</span>
+        <span className="bs-figure">{formatUSD(totalExpenses)}</span>
       </div>
-      <div className="summary-card">
-        <h3>Balance</h3>
-        <p className="balance-amount">${balance}</p>
+
+      <span className="bs-op" aria-hidden="true">=</span>
+
+      <div className={`bs-term bs-net${balance < 0 ? " is-negative" : ""}`}>
+        <span className="bs-label">Balance</span>
+        <span className="bs-figure">{formatUSD(balance)}</span>
       </div>
-    </div>
+    </section>
   );
 }
 
