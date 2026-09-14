@@ -23,7 +23,7 @@ There is no test runner or test suite configured.
 - `index.html` → `src/main.jsx` (mounts `<App />` in StrictMode) → `src/App.jsx`.
 - The whole app lives in one component, `src/App.jsx`: all state is local `useState` (transactions, form fields, filters). There is no routing, no persistence (data resets on reload), and no backend.
 - Seed transactions are hardcoded in the initial state. Each transaction is `{ id, description, amount, type: "income" | "expense", category, date }`.
-- `amount` is stored as a **string**, both in the seed data and from the form input. The income/expense totals `reduce` over it with `+`, so they concatenate strings instead of adding numbers; this is the known bug behind the garbled summary cards.
+- `amount` must be a **number**: the income/expense totals `reduce` over it with `+`, so a string amount concatenates instead of adding. The form input value is a string and is converted with `parseFloat` in `handleSubmit`.
 - Summary totals and the filtered list are derived on every render, not stored in state.
 - Categories are a hardcoded array in `App.jsx`, shared by the add form and the category filter.
 - Styles: `src/index.css` (global) and `src/App.css` (component classes such as `.summary-card`, `.income-amount`, `.expense-amount`).
