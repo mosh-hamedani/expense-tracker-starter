@@ -21,12 +21,16 @@ There is no test runner or test suite configured.
 ## Architecture
 
 - `index.html` → `src/main.jsx` (mounts `<App />` in StrictMode) → `src/App.jsx`.
-- The whole app lives in one component, `src/App.jsx`: all state is local `useState` (transactions, form fields, filters). There is no routing, no persistence (data resets on reload), and no backend.
-- Seed transactions are hardcoded in the initial state. Each transaction is `{ id, description, amount, type: "income" | "expense", category, date }`.
-- `amount` must be a **number**: the income/expense totals `reduce` over it with `+`, so a string amount concatenates instead of adding. The form input value is a string and is converted with `parseFloat` in `handleSubmit`.
-- Summary totals and the filtered list are derived on every render, not stored in state.
-- Categories are a hardcoded array in `App.jsx`, shared by the add form and the category filter.
-- Styles: `src/index.css` (global) and `src/App.css` (component classes such as `.summary-card`, `.income-amount`, `.expense-amount`).
+- No routing, no persistence (data resets on reload), no backend, no state library. All state is local `useState`.
+- Components are flat files in `src/` (no `components/` folder), one default-exported function component per file:
+  - `App.jsx`: owns the single source of truth, the `transactions` array (hardcoded seed data), and `handleAdd`, which appends a transaction. Also defines the module-level `categories` array and passes it down as a prop.
+  - `Summary.jsx`: props `transactions`. Derives income, expense and balance totals on each render.
+  - `TransactionForm.jsx`: props `categories`, `onAdd`. Owns its own form-field state, builds the full transaction object (id from `Date.now()`, today's date), calls `onAdd`, then resets the fields.
+  - `TransactionList.jsx`: props `transactions`, `categories`. Owns the type/category filter state and renders the filtered table.
+- Data flows one way: `App` passes `transactions` down; the only upward path is `TransactionForm` → `onAdd`. Form and filter state are local to their components, so `App` does not see them.
+- Each transaction is `{ id, description, amount, type: "income" | "expense", category, date }`.
+- `amount` must be a **number**: `Summary` sums it with `+`, so a string amount concatenates instead of adding. The form input value is a string and is converted with `parseFloat` in `TransactionForm`.
+- Styles: `src/index.css` (global) and `src/App.css` (all component classes, e.g. `.summary-card`, `.add-transaction`, `.transactions`, `.income-amount`, `.expense-amount`). Components don't import their own CSS.
 
 ## Lint notes
 
