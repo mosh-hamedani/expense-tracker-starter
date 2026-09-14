@@ -8,15 +8,22 @@ function TransactionForm({ categories, onAdd }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!description || !amount) return;
+    const trimmedDescription = description.trim();
+    const parsedAmount = parseFloat(amount);
+    if (!trimmedDescription || !Number.isFinite(parsedAmount) || parsedAmount <= 0) return;
+
+    // Local calendar date; toISOString() would give the UTC date.
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, "0");
+    const date = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 
     onAdd({
       id: Date.now(),
-      description,
-      amount: parseFloat(amount),
+      description: trimmedDescription,
+      amount: parsedAmount,
       type,
       category,
-      date: new Date().toISOString().split('T')[0],
+      date,
     });
     setDescription("");
     setAmount("");
