@@ -1,11 +1,11 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LabelList, ResponsiveContainer } from 'recharts'
+import { formatMoney } from './format'
 
-const BAR_COLOR = "#2a78d6";
-const MUTED_INK = "#898781";
-const GRID_COLOR = "#e1e0d9";
-const CHART_HEIGHT = 300;
-
-const formatAmount = (value) => `$${value.toLocaleString()}`;
+const BAR_COLOR = "#1d4d3c";
+const INK = "#15241f";
+const MUTED_INK = "#5d6e66";
+const GRID_COLOR = "#d5ded7";
+const CHART_HEIGHT = 280;
 
 function SpendingChart({ transactions }) {
   const totals = {};
@@ -20,38 +20,46 @@ function SpendingChart({ transactions }) {
     .sort((a, b) => b.amount - a.amount);
 
   return (
-    <div className="spending-chart">
-      <h2>Spending by Category</h2>
+    <section className="spending-chart">
+      <h2>Where it went</h2>
       {data.length === 0 ? (
-        <p className="empty">No expenses yet.</p>
+        <p className="empty">Spending by category shows up here once you add an expense.</p>
       ) : (
-        <ResponsiveContainer width="100%" height={CHART_HEIGHT}>
-          <BarChart data={data} margin={{ top: 20, right: 10, bottom: 0, left: 0 }}>
-            <CartesianGrid vertical={false} stroke={GRID_COLOR} />
-            <XAxis
-              dataKey="category"
-              interval={0}
-              tick={{ fill: "#333", fontSize: 12 }}
-              axisLine={{ stroke: GRID_COLOR }}
-              tickLine={false}
-            />
-            <YAxis
-              tickFormatter={formatAmount}
-              tick={{ fill: MUTED_INK, fontSize: 12 }}
-              axisLine={false}
-              tickLine={false}
-            />
-            <Tooltip
-              cursor={{ fill: "#f5f5f5" }}
-              formatter={(value) => [formatAmount(value), "Spent"]}
-            />
-            <Bar dataKey="amount" fill={BAR_COLOR} barSize={24} radius={[4, 4, 0, 0]} isAnimationActive={false}>
-              <LabelList dataKey="amount" position="top" formatter={formatAmount} fill="#333" fontSize={12} />
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+        <div className="chart-scroll">
+          <div className="chart-inner">
+            <ResponsiveContainer width="100%" height={CHART_HEIGHT}>
+              <BarChart data={data} margin={{ top: 24, right: 8, bottom: 0, left: 0 }}>
+                <CartesianGrid vertical={false} stroke={GRID_COLOR} />
+                <XAxis
+                  dataKey="category"
+                  interval={0}
+                  tick={{ fill: INK, fontSize: 13 }}
+                  axisLine={{ stroke: GRID_COLOR }}
+                  tickLine={false}
+                />
+                <YAxis
+                  tickFormatter={formatMoney}
+                  tick={{ fill: MUTED_INK, fontSize: 12 }}
+                  axisLine={false}
+                  tickLine={false}
+                  width={64}
+                />
+                <Tooltip
+                  cursor={{ fill: "rgba(29, 77, 60, 0.06)" }}
+                  formatter={(value) => [formatMoney(value), "Spent"]}
+                  contentStyle={{ border: `1px solid ${GRID_COLOR}`, borderRadius: 6, fontSize: 13 }}
+                  labelStyle={{ color: INK, fontWeight: 600, textTransform: "capitalize" }}
+                  itemStyle={{ color: INK }}
+                />
+                <Bar dataKey="amount" fill={BAR_COLOR} barSize={28} radius={[4, 4, 0, 0]} isAnimationActive={false}>
+                  <LabelList dataKey="amount" position="top" formatter={formatMoney} fill={INK} fontSize={12} />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       )}
-    </div>
+    </section>
   );
 }
 

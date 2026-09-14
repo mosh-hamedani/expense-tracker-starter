@@ -30,7 +30,8 @@ There is no test runner or test suite configured.
 - Data flows one way: `App` passes `transactions` down; the only upward path is `TransactionForm` → `onAdd`. Form and filter state are local to their components, so `App` does not see them.
 - Each transaction is `{ id, description, amount, type: "income" | "expense", category, date }`.
 - `amount` must be a **number**: `Summary` sums it with `+`, so a string amount concatenates instead of adding. The form input value is a string and is converted with `parseFloat` in `TransactionForm`.
-- Styles: `src/index.css` (global) and `src/App.css` (all component classes, e.g. `.summary-card`, `.add-transaction`, `.transactions`, `.income-amount`, `.expense-amount`). Components don't import their own CSS.
+- Shared helpers: `src/format.js` exports `formatMoney` and `formatDate`, used by the components for display.
+- Styles: `src/index.css` (global reset and color/font tokens as CSS custom properties) and `src/App.css` (all component classes, e.g. `.summary`, `.add-transaction`, `.transactions`, `.income-amount`, `.expense-amount`). Components don't import their own CSS.
 
 ## Lint notes
 
