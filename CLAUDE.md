@@ -28,5 +28,9 @@ There is no test framework or test script configured.
 
 ## Known issues
 
+<!--  -->
+
 - The intentional bug: `amount` is stored as a string (both in the seed data and from the form input), so the `reduce` calls that compute totals concatenate strings instead of adding numbers. The summary cards show values like `$05000`.
 - The seed entry "Freelance Work" has `type: "expense"` but category `salary`, which looks like a data mistake.
+
+## -->
