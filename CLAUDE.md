@@ -22,10 +22,14 @@ No test runner is configured.
 
 - Plain JavaScript (JSX), no TypeScript, no router, no state library, no backend or persistence. Data resets on reload.
 - `src/main.jsx` mounts `<App />` in `StrictMode`.
-- `src/App.jsx` is the whole app in a single component: transaction list state (seeded with hardcoded sample data), add-transaction form state, type/category filters, and derived income/expense/balance totals computed inline on each render.
+- `src/App.jsx` owns the single source of truth: the `transactions` array (seeded with hardcoded sample data) and the shared `categories` constant. It passes them down as props; children never mutate state directly.
+  - `Summary` — derives income/expense/balance totals from `transactions` on each render.
+  - `TransactionForm` — owns its own input state; builds a transaction and hands it to `App` via `onAdd`.
+  - `TransactionList` — owns the type/category filter state and renders the filtered table.
+- Components live flat in `src/` as one default-exported component per `.jsx` file.
+- Transaction shape: `{ id, description, amount: number, type: "income" | "expense", category, date: "YYYY-MM-DD" }`. `amount` must stay a number (the form converts with `Number()`); totals rely on numeric addition.
 - Styling: global CSS in `src/index.css` and `src/App.css` (class names like `summary-card`, `income-amount`, `expense-amount`).
 
 ## Gotchas
 
-- Transaction `amount` is stored as a **string** (both seed data and form input), but totals are computed with `reduce((sum, t) => sum + t.amount, 0)`, which concatenates strings instead of adding numbers.
 - ESLint `no-unused-vars` ignores names matching `^[A-Z_]`.
